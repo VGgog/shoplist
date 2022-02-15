@@ -16,3 +16,21 @@ def group_buttons():
 
     return start_menu_keyboard
 
+
+def menu_buttons():
+    """
+    Menu buttons to manage the list.
+    """
+
+    menu_keyboard = types.InlineKeyboardMarkup(row_width=1)
+
+    buttons = [
+            types.InlineKeyboardButton(text="Список", callback_data="shoplist"),
+            types.InlineKeyboardButton(text="Добавить в список", callback_data="add_to_shoplist"),
+            types.InlineKeyboardButton(text="Удалить из списка", callback_data="delete_in_shoplist")
+            ]
+
+    menu_keyboard.add(*buttons)
+
+    return menu_keyboard
+
