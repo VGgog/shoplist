@@ -1,14 +1,16 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from handlers import keyboard
+from handlers import keyboard, texts
 from handlers.states import StateForm
+
 
 async def start_menu(message: types.Message):
     """
     Send text when user enters the bot first time.
     """
-    await message.answer("Приветствую", reply_markup=keyboard.group_buttons())
+    await message.answer(texts.hello_text)
+    await message.answer(texts.group_text, reply_markup=keyboard.group_buttons())
 
 
 async def callback_buttons_handler(callback_query):
