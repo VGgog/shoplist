@@ -54,6 +54,25 @@ async def callback_buttons_handler(callback_query):
         await callback_query.message.answer("Введите код группы:")
 
     elif callback_query.data == "shoplist":
+       
+        user_id = callback_query.message.chat.id
+        user_info = crud.find_group(users_collection, {"user_id": user_id})
+        group_id = user_info["group_id"]
+        
+        group_data = crud.find_group(shoplist_collection, {"_id": group_id})
+        products = group_data["shoplist"]
+       
+        if products:
+            i = 1
+            user_message = ''
+            for product in products:
+                user_message += "{}) {}\n".format(i, product)
+                i += 1
+
+        else:
+            user_message = "Список пуст..."
+
+        await callback_query.message.answer(user_message)
         await callback_query.message.answer("Меню:", reply_markup=keyboard.menu_buttons())
 
     elif callback_query.data == "add_to_shoplist":
@@ -103,6 +122,19 @@ async def add_product_in_shoplist(message: types.Message, state: FSMContext):
     """
     Handler for add product in shoplist.
     """
+    product_text = message.text
+
+    user_id = message.chat.id
+    user_info = crud.find_group(users_collection, {"user_id": user_id})
+    group_id = user_info["group_id"]
+
+    group_data = crud.find_group(shoplist_collection, {"_id": group_id})
+    products = group_data["shoplist"]
+    
+    products.append(product_text)
+
+    crud.update_document(shoplist_collection, {"_id": group_id}, {"shoplist": products})
+
     await message.answer("Продукт добавлен")
     await state.finish()
     await message.answer("Меню:", reply_markup=keyboard.menu_buttons())
