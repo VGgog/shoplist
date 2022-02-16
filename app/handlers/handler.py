@@ -3,7 +3,7 @@ from aiogram.dispatcher import FSMContext
 
 from handlers import keyboard, texts, function
 from handlers.states import StateForm
-from database import crud
+from database import shoplist_collection, users_collection, crud
 
 
 async def start_menu(message: types.Message):
@@ -31,7 +31,7 @@ async def callback_buttons_handler(callback_query):
                 "shoplist": [],
                 }
 
-        crud.create_a_group_doc(data)
+        crud.create_a_group_doc(shoplist_collection, data)
 
         await callback_query.message.answer("Группа создана.\n\nКод группы: {}".format(group_id))
         await callback_query.message.answer("Меню:", reply_markup=keyboard.menu_buttons())
@@ -61,12 +61,12 @@ async def add_user_in_group(message: types.Message, state: FSMContext):
     text = message.text
 
     group_id = int(text) if text.isdigit() else text
-    data = crud.find_group({"_id": group_id})
+    data = crud.find_group(shoplist_collection, {"_id": group_id})
     
     if data:    
         users = data["users"]
         users.append(message.chat.id)
-        crud.update_document({"_id": group_id}, {"users": users})
+        crud.update_document(shoplist_collection, {"_id": group_id}, {"users": users})
         
         await message.answer("Вы добавлены в группу")
         await message.answer("Меню:", reply_markup=keyboard.menu_buttons())

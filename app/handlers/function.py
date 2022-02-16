@@ -1,4 +1,6 @@
-import random 
+import random
+
+from database import shoplist_collection
 from database.crud import find_group
 
 
@@ -7,7 +9,7 @@ def generate_group_id():
     Return group id whith not in MongoDB 
     """
     group_id = generate_code()
-    while find_group(group_id):
+    while find_group(shoplist_collection, group_id):
         group_id = generate_code()
 
     return group_id
