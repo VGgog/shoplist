@@ -11,6 +11,7 @@ def register_handlers(dp: Dispatcher):
     dp.register_message_handler(handler.start_menu, commands="start")
     dp.register_message_handler(handler.add_product_in_shoplist, state=StateForm.add_product)
     dp.register_message_handler(handler.delete_product_in_shoplist, state=StateForm.delete_product)
+    dp.register_message_handler(handler.add_user_in_group, state=StateForm.adding_user)
      
 
 def register_buttons_callback(dp: Dispatcher):

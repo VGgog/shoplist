@@ -6,4 +6,5 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 class StateForm(StatesGroup):
     add_product = State()
     delete_product = State()
+    adding_user = State()
 

@@ -14,3 +14,9 @@ def find_group(data):
     """
     return collection.find_one(data)
 
+
+def update_document(element, new_value):
+    """
+    """
+    return collection.update_one(element, {'$set': new_value})
+
