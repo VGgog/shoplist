@@ -80,8 +80,26 @@ async def callback_buttons_handler(callback_query):
         await callback_query.message.answer("Напишите продукт, который хотите добавить: ")
     
     elif callback_query.data == "delete_in_shoplist":
-        await StateForm.delete_product.set()
-        await callback_query.message.answer("Введите номер продукта, который хотите удалить: ")
+        user_id = callback_query.message.chat.id
+        user_info = crud.find_group(users_collection, {"user_id": user_id})
+        group_id = user_info["group_id"]
+
+        group_data = crud.find_group(shoplist_collection, {"_id": group_id})
+        products = group_data["shoplist"]
+
+        if products:
+            i = 1
+            user_message = ''
+            for product in products:
+                user_message += "{}) {}\n".format(i, product)
+                i += 1
+            await callback_query.message.answer(user_message)
+            await StateForm.delete_product.set()
+            await callback_query.message.answer("Введите номер продукта, который хотите удалить: ")
+        else:
+            await callback_query.message.answer("Список пуст...")
+            await callback_query.message.answer("Меню:", reply_markup=keyboard.menu_buttons())
+
 
 
 async def add_user_in_group(message: types.Message, state: FSMContext):
@@ -144,7 +162,29 @@ async def delete_product_in_shoplist(message: types.Message, state: FSMContext):
     """
     Handler for delete product in shoplist. 
     """
-    await message.answer("Продукт удалён")
+    product_text = message.text
+    if product_text.isdigit():
+        product_index = int(product_text)
+
+
+        user_id = message.chat.id
+        user_info = crud.find_group(users_collection, {"user_id": user_id})
+        group_id = user_info["group_id"]
+
+        group_data = crud.find_group(shoplist_collection, {"_id": group_id})
+        products = group_data["shoplist"]
+
+        if product_index in range(1, len(products) + 1):
+            products.pop(product_index - 1)
+            crud.update_document(shoplist_collection, {"_id": group_id}, {"shoplist": products})
+
+            await message.answer("Продукт удалён")
+        else:
+            await message.answer("Такого пункта нет")
+    
+    else:
+        await message.answer("Введите число")
+    
     await state.finish()
     await message.answer("Меню:", reply_markup=keyboard.menu_buttons())
 
