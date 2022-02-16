@@ -1,8 +1,9 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from handlers import keyboard, texts
+from handlers import keyboard, texts, function
 from handlers.states import StateForm
+from database.crud import create_a_group_doc, find_group
 
 
 async def start_menu(message: types.Message):
@@ -20,6 +21,19 @@ async def callback_buttons_handler(callback_query):
     await callback_query.message.delete()
 
     if callback_query.data == "create_group":
+        # callback for button whith create a group
+
+        group_id = function.generate_group_id()
+        user_id = callback_query.message.chat.id
+        
+        data = {"_id": group_id, 
+                "users": [user_id],
+                "shoplist": [],
+                }
+
+        create_a_group_doc(data)
+
+        await callback_query.message.answer("Группа создана.\n\nКод группы: {}".format(group_id))
         await callback_query.message.answer("Меню:", reply_markup=keyboard.menu_buttons())
 
     elif callback_query.data == "add_to_a_group":
