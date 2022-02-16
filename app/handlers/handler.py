@@ -20,13 +20,15 @@ async def callback_buttons_handler(callback_query):
     """
     await callback_query.message.delete()
 
+    # callback for button whith create a group
     if callback_query.data == "create_group":
-        # callback for button whith create a group
 
         group_id = function.generate_group_id()
         user_id = callback_query.message.chat.id
         
-        data = {"_id": group_id, 
+        # create group info and add this info in shoplist collection
+        data = {
+                "_id": group_id, 
                 "users": [user_id],
                 "shoplist": [],
                 }
@@ -34,6 +36,15 @@ async def callback_buttons_handler(callback_query):
         crud.create_a_group_doc(shoplist_collection, data)
 
         await callback_query.message.answer("Группа создана.\n\nКод группы: {}".format(group_id))
+        
+        # create user info and add this info in users collection
+        data = {
+                "group_id": group_id,
+                "user_id": user_id
+                }
+
+        crud.create_a_group_doc(users_collection, data)
+
         await callback_query.message.answer("Меню:", reply_markup=keyboard.menu_buttons())
 
     elif callback_query.data == "add_to_a_group":
@@ -62,13 +73,23 @@ async def add_user_in_group(message: types.Message, state: FSMContext):
 
     group_id = int(text) if text.isdigit() else text
     data = crud.find_group(shoplist_collection, {"_id": group_id})
-    
+    user_id = message.chat.id
     if data:    
+        # add new user in shoplist collection
         users = data["users"]
-        users.append(message.chat.id)
+        users.append(user_id)
         crud.update_document(shoplist_collection, {"_id": group_id}, {"users": users})
         
         await message.answer("Вы добавлены в группу")
+        
+        # create and add new user in users collection
+        data = {
+                "group_id": group_id,
+                "user_id": user_id
+                }
+
+        crud.create_a_group_doc(users_collection, data)
+
         await message.answer("Меню:", reply_markup=keyboard.menu_buttons())
     
     else:
