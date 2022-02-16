@@ -1,4 +1,4 @@
-from aiogram import Bot, types, Dispatcher, executor
+from aiogram import Bot, Dispatcher, executor
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
 from handlers import register_handlers, register_buttons_callback
@@ -11,4 +11,3 @@ register_handlers(dp)
 register_buttons_callback(dp)
 
 executor.start_polling(dp)
-

@@ -38,12 +38,7 @@ async def callback_buttons_handler(callback_query):
         await callback_query.message.answer("Группа создана.\n\nКод группы: {}".format(group_id))
         
         # create user info and add this info in users collection
-        data = {
-                "group_id": group_id,
-                "user_id": user_id
-                }
-
-        crud.create_a_group_doc(users_collection, data)
+        crud.create_a_group_doc(users_collection, function.get_data_for_user_collection(group_id, user_id))
 
         await callback_query.message.answer("Меню:", reply_markup=keyboard.menu_buttons())
 
@@ -54,7 +49,8 @@ async def callback_buttons_handler(callback_query):
         await callback_query.message.answer("Введите код группы:")
 
     elif callback_query.data == "shoplist":
-       
+        # callback button whith display all shoplist
+
         user_id = callback_query.message.chat.id
         user_info = crud.find_group(users_collection, {"user_id": user_id})
         group_id = user_info["group_id"]
@@ -63,12 +59,7 @@ async def callback_buttons_handler(callback_query):
         products = group_data["shoplist"]
        
         if products:
-            i = 1
-            user_message = ''
-            for product in products:
-                user_message += "{}) {}\n".format(i, product)
-                i += 1
-
+            user_message = function.get_user_message(products)
         else:
             user_message = "Список пуст..."
 
@@ -76,30 +67,29 @@ async def callback_buttons_handler(callback_query):
         await callback_query.message.answer("Меню:", reply_markup=keyboard.menu_buttons())
 
     elif callback_query.data == "add_to_shoplist":
+        # callback buttons for add new product in shoplist
+
         await StateForm.add_product.set()
         await callback_query.message.answer("Напишите продукт, который хотите добавить: ")
     
     elif callback_query.data == "delete_in_shoplist":
+        # callback buttons for delete product in shoplist
+
         user_id = callback_query.message.chat.id
         user_info = crud.find_group(users_collection, {"user_id": user_id})
         group_id = user_info["group_id"]
 
-        group_data = crud.find_group(shoplist_collection, {"_id": group_id})
-        products = group_data["shoplist"]
+        products = function.get_shoplist(group_id)
 
         if products:
-            i = 1
-            user_message = ''
-            for product in products:
-                user_message += "{}) {}\n".format(i, product)
-                i += 1
+            user_message = function.get_user_message(products)
             await callback_query.message.answer(user_message)
             await StateForm.delete_product.set()
             await callback_query.message.answer("Введите номер продукта, который хотите удалить: ")
+
         else:
             await callback_query.message.answer("Список пуст...")
             await callback_query.message.answer("Меню:", reply_markup=keyboard.menu_buttons())
-
 
 
 async def add_user_in_group(message: types.Message, state: FSMContext):
@@ -111,6 +101,7 @@ async def add_user_in_group(message: types.Message, state: FSMContext):
     group_id = int(text) if text.isdigit() else text
     data = crud.find_group(shoplist_collection, {"_id": group_id})
     user_id = message.chat.id
+
     if data:    
         # add new user in shoplist collection
         users = data["users"]
@@ -120,12 +111,7 @@ async def add_user_in_group(message: types.Message, state: FSMContext):
         await message.answer("Вы добавлены в группу")
         
         # create and add new user in users collection
-        data = {
-                "group_id": group_id,
-                "user_id": user_id
-                }
-
-        crud.create_a_group_doc(users_collection, data)
+        crud.create_a_group_doc(users_collection, function.get_data_for_user_collection(group_id, user_id))
 
         await message.answer("Меню:", reply_markup=keyboard.menu_buttons())
     
@@ -146,11 +132,9 @@ async def add_product_in_shoplist(message: types.Message, state: FSMContext):
     user_info = crud.find_group(users_collection, {"user_id": user_id})
     group_id = user_info["group_id"]
 
-    group_data = crud.find_group(shoplist_collection, {"_id": group_id})
-    products = group_data["shoplist"]
-    
-    products.append(product_text)
+    products = function.get_shoplist(group_id)
 
+    products.append(product_text)
     crud.update_document(shoplist_collection, {"_id": group_id}, {"shoplist": products})
 
     await message.answer("Продукт добавлен")
@@ -166,18 +150,15 @@ async def delete_product_in_shoplist(message: types.Message, state: FSMContext):
     if product_text.isdigit():
         product_index = int(product_text)
 
-
         user_id = message.chat.id
         user_info = crud.find_group(users_collection, {"user_id": user_id})
         group_id = user_info["group_id"]
 
-        group_data = crud.find_group(shoplist_collection, {"_id": group_id})
-        products = group_data["shoplist"]
+        products = function.get_shoplist(group_id)
 
         if product_index in range(1, len(products) + 1):
             products.pop(product_index - 1)
             crud.update_document(shoplist_collection, {"_id": group_id}, {"shoplist": products})
-
             await message.answer("Продукт удалён")
         else:
             await message.answer("Такого пункта нет")
@@ -187,4 +168,3 @@ async def delete_product_in_shoplist(message: types.Message, state: FSMContext):
     
     await state.finish()
     await message.answer("Меню:", reply_markup=keyboard.menu_buttons())
-
