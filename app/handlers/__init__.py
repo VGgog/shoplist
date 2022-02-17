@@ -9,6 +9,8 @@ def register_handlers(dp: Dispatcher):
     Register all handlers.
     """
     dp.register_message_handler(handler.start_menu, commands="start")
+    dp.register_message_handler(handler.send_group_code, commands="code")
+    dp.register_message_handler(handler.exit_group, commands="exit")
     dp.register_message_handler(handler.add_product_in_shoplist, state=StateForm.add_product)
     dp.register_message_handler(handler.delete_product_in_shoplist, state=StateForm.delete_product)
     dp.register_message_handler(handler.add_user_in_group, state=StateForm.adding_user)

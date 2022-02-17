@@ -168,3 +168,52 @@ async def delete_product_in_shoplist(message: types.Message, state: FSMContext):
     
     await state.finish()
     await message.answer("Меню:", reply_markup=keyboard.menu_buttons())
+
+
+async def send_group_code(message: types.Message):
+    """
+    Handler for send user code group
+    """
+    user_id = message.chat.id
+    user_info = crud.find_group(users_collection, {"user_id": user_id})
+    
+    if user_info:
+        group_id = user_info["group_id"]
+        
+        await message.answer("Код группы:\n\n{}".format(group_id))
+        await message.answer("Меню:", reply_markup=keyboard.menu_buttons())
+
+    else:
+        await message.answer("Вы не состоите в группе")
+        await message.answer(texts.group_text, reply_markup=keyboard.group_buttons())
+
+
+async def exit_group(message: types.Message):
+    """
+    Handler for exit user in group
+    """
+    user_id = message.chat.id
+    user_data = {"user_id": user_id}
+    user_info = crud.find_group(users_collection, user_data)
+
+    if user_info:
+        group_id = user_info["group_id"]
+        group_data = {"_id": group_id}
+        
+        # Delete user in users collection
+        crud.delete_document(users_collection, user_data)
+        
+        users = crud.find_group(shoplist_collection, group_data)
+        users_list = users["users"]
+        users_list.remove(user_id)
+
+        # Delete user in users list in shoplist collection
+        crud.update_document(shoplist_collection, group_data, {"users": users_list})
+        
+        await message.answer("Вы вышли из группы")
+
+    else:
+        await message.answer("Вы не состоите в группе")
+    
+    await message.answer(texts.group_text, reply_markup=keyboard.group_buttons())
+
