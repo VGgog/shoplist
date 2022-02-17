@@ -8,10 +8,23 @@ from database import shoplist_collection, users_collection, crud
 
 async def start_menu(message: types.Message):
     """
-    Send text when user enters the bot first time.
+    The bot's response to the start command.
     """
     await message.answer(texts.hello_text)
-    await message.answer(texts.group_text, reply_markup=keyboard.group_buttons())
+    
+    user_id = message.chat.id
+    
+    if crud.find_group(users_collection, {"user_id": user_id}):
+        # If user is in the users collection then he consist in group.
+        # And so that the user don't add in other group he get menu buttons.
+        
+        await message.answer("Меню:", reply_markup=keyboard.menu_buttons())
+    
+    else:
+        # If user not in users collection then he gets group buttons. 
+        # For add to group or create group.
+
+        await message.answer(texts.group_text, reply_markup=keyboard.group_buttons())
 
 
 async def callback_buttons_handler(callback_query):
