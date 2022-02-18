@@ -13,7 +13,7 @@ async def start_menu(message: types.Message):
     
     user_id = message.chat.id
     
-    if crud.find_group(users_collection, {"user_id": user_id}):
+    if crud.find_document(users_collection, {"user_id": user_id}):
         # If user is in the users collection then he consist in group.
         # And so that the user don't add in other group he get menu buttons.
         
@@ -33,7 +33,7 @@ async def add_user_in_group(message: types.Message, state: FSMContext):
     text = message.text
 
     group_id = int(text) if text.isdigit() else text
-    data = crud.find_group(shoplist_collection, {"_id": group_id})
+    data = crud.find_document(shoplist_collection, {"_id": group_id})
     user_id = message.chat.id
 
     if data:    
@@ -45,7 +45,7 @@ async def add_user_in_group(message: types.Message, state: FSMContext):
         await message.answer("Вы добавлены в группу")
         
         # create and add new user in users collection
-        crud.create_a_group_doc(users_collection, function.get_data_for_user_collection(group_id, user_id))
+        crud.create_document(users_collection, function.get_data_for_user_collection(group_id, user_id))
 
         await message.answer("Меню:", reply_markup=keyboard.menu_buttons())
     
@@ -63,7 +63,7 @@ async def add_product_in_shoplist(message: types.Message, state: FSMContext):
     product_text = message.text
 
     user_id = message.chat.id
-    user_info = crud.find_group(users_collection, {"user_id": user_id})
+    user_info = crud.find_document(users_collection, {"user_id": user_id})
     group_id = user_info["group_id"]
 
     products = function.get_shoplist(group_id)
@@ -85,7 +85,7 @@ async def delete_product_in_shoplist(message: types.Message, state: FSMContext):
         product_index = int(product_text)
 
         user_id = message.chat.id
-        user_info = crud.find_group(users_collection, {"user_id": user_id})
+        user_info = crud.find_document(users_collection, {"user_id": user_id})
         group_id = user_info["group_id"]
 
         products = function.get_shoplist(group_id)
@@ -109,7 +109,7 @@ async def send_group_code(message: types.Message):
     Handler for send user code group
     """
     user_id = message.chat.id
-    user_info = crud.find_group(users_collection, {"user_id": user_id})
+    user_info = crud.find_document(users_collection, {"user_id": user_id})
     
     if user_info:
         group_id = user_info["group_id"]
@@ -128,7 +128,7 @@ async def exit_group(message: types.Message):
     """
     user_id = message.chat.id
     user_data = {"user_id": user_id}
-    user_info = crud.find_group(users_collection, user_data)
+    user_info = crud.find_document(users_collection, user_data)
 
     if user_info:
         group_id = user_info["group_id"]
@@ -137,7 +137,7 @@ async def exit_group(message: types.Message):
         # Delete user in users collection
         crud.delete_document(users_collection, user_data)
         
-        users = crud.find_group(shoplist_collection, group_data)
+        users = crud.find_document(shoplist_collection, group_data)
         users_list = users["users"]
         users_list.remove(user_id)
 

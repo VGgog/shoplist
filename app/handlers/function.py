@@ -9,7 +9,7 @@ def generate_group_id():
     Return group id whith not in MongoDB 
     """
     group_id = generate_code()
-    while crud.find_group(shoplist_collection, group_id):
+    while crud.find_document(shoplist_collection, group_id):
         group_id = generate_code()
 
     return group_id
@@ -26,7 +26,7 @@ def get_shoplist(group_id):
     """
     get shoplist
     """
-    group_data = crud.find_group(shoplist_collection, {"_id": group_id})
+    group_data = crud.find_document(shoplist_collection, {"_id": group_id})
     return group_data["shoplist"]
 
 

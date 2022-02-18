@@ -22,12 +22,12 @@ async def callback_buttons_handler(callback_query):
             "shoplist": [],
         }
 
-        crud.create_a_group_doc(shoplist_collection, data)
+        crud.create_document(shoplist_collection, data)
 
         await callback_query.message.answer("Группа создана.\n\nКод группы: {}".format(group_id))
 
         # create user info and add this info in users collection
-        crud.create_a_group_doc(users_collection, function.get_data_for_user_collection(group_id, user_id))
+        crud.create_document(users_collection, function.get_data_for_user_collection(group_id, user_id))
 
         await callback_query.message.answer("Меню:", reply_markup=keyboard.menu_buttons())
 
@@ -41,10 +41,10 @@ async def callback_buttons_handler(callback_query):
         # callback button whith display all shoplist
 
         user_id = callback_query.message.chat.id
-        user_info = crud.find_group(users_collection, {"user_id": user_id})
+        user_info = crud.find_document(users_collection, {"user_id": user_id})
         group_id = user_info["group_id"]
 
-        group_data = crud.find_group(shoplist_collection, {"_id": group_id})
+        group_data = crud.find_document(shoplist_collection, {"_id": group_id})
         products = group_data["shoplist"]
 
         if products:
@@ -65,7 +65,7 @@ async def callback_buttons_handler(callback_query):
         # callback buttons for delete product in shoplist
 
         user_id = callback_query.message.chat.id
-        user_info = crud.find_group(users_collection, {"user_id": user_id})
+        user_info = crud.find_document(users_collection, {"user_id": user_id})
         group_id = user_info["group_id"]
 
         products = function.get_shoplist(group_id)
