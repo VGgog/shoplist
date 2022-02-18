@@ -8,7 +8,7 @@ def register_handlers(dp: Dispatcher):
     """
     Register all handlers.
     """
-    dp.register_message_handler(handler.start_menu, commands="start")
+    dp.register_message_handler(handler.start, commands="start")
     dp.register_message_handler(handler.send_group_code, commands="code")
     dp.register_message_handler(handler.exit_group, commands="exit")
 
