@@ -1,4 +1,4 @@
-from handlers import keyboard, texts, function
+from handlers import keyboard, texts, functions
 from handlers.states import StateForm
 from database import shoplist_collection, users_collection, crud
 
@@ -12,7 +12,7 @@ async def callback_buttons_handler(callback_query):
     # callback for button whith create a group
     if callback_query.data == "create_group":
 
-        group_id = function.generate_group_id()
+        group_id = functions.generate_group_id()
         user_id = callback_query.message.chat.id
 
         # create group info and add this info in shoplist collection
@@ -27,7 +27,7 @@ async def callback_buttons_handler(callback_query):
         await callback_query.message.answer("Группа создана.\n\nКод группы: {}".format(group_id))
 
         # create user info and add this info in users collection
-        crud.create_document(users_collection, function.get_data_for_user_collection(group_id, user_id))
+        crud.create_document(users_collection, functions.get_data_for_users_collection(group_id, user_id))
 
         await callback_query.message.answer("Меню:", reply_markup=keyboard.menu_buttons())
 
@@ -48,7 +48,7 @@ async def callback_buttons_handler(callback_query):
         products = group_data["shoplist"]
 
         if products:
-            user_message = function.get_user_message(products)
+            user_message = functions.message_which_shopping_list(products)
         else:
             user_message = "Список пуст..."
 
@@ -68,10 +68,10 @@ async def callback_buttons_handler(callback_query):
         user_info = crud.find_document(users_collection, {"user_id": user_id})
         group_id = user_info["group_id"]
 
-        products = function.get_shoplist(group_id)
+        products = functions.get_shoplist(group_id)
 
         if products:
-            user_message = function.get_user_message(products)
+            user_message = functions.message_which_shopping_list(products)
             await callback_query.message.answer(user_message)
             await StateForm.delete_product.set()
             await callback_query.message.answer("Введите номер продукта, который хотите удалить: ")

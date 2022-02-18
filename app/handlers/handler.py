@@ -1,7 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from handlers import keyboard, texts, function
+from handlers import keyboard, texts, functions
 from database import shoplist_collection, users_collection, crud
 
 
@@ -45,7 +45,7 @@ async def add_user_in_group(message: types.Message, state: FSMContext):
         await message.answer("Вы добавлены в группу")
         
         # create and add new user in users collection
-        crud.create_document(users_collection, function.get_data_for_user_collection(group_id, user_id))
+        crud.create_document(users_collection, functions.get_data_for_users_collection(group_id, user_id))
 
         await message.answer("Меню:", reply_markup=keyboard.menu_buttons())
     
@@ -66,7 +66,7 @@ async def add_product_in_shoplist(message: types.Message, state: FSMContext):
     user_info = crud.find_document(users_collection, {"user_id": user_id})
     group_id = user_info["group_id"]
 
-    products = function.get_shoplist(group_id)
+    products = functions.get_shoplist(group_id)
 
     products.append(product_text)
     crud.update_document(shoplist_collection, {"_id": group_id}, {"shoplist": products})
@@ -88,7 +88,7 @@ async def delete_product_in_shoplist(message: types.Message, state: FSMContext):
         user_info = crud.find_document(users_collection, {"user_id": user_id})
         group_id = user_info["group_id"]
 
-        products = function.get_shoplist(group_id)
+        products = functions.get_shoplist(group_id)
 
         if product_index in range(1, len(products) + 1):
             products.pop(product_index - 1)
@@ -150,4 +150,3 @@ async def exit_group(message: types.Message):
         await message.answer("Вы не состоите в группе")
     
     await message.answer(texts.group_text, reply_markup=keyboard.group_buttons())
-

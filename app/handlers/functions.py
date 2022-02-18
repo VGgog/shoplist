@@ -6,7 +6,7 @@ from database import crud
 
 def generate_group_id():
     """
-    Return group id whith not in MongoDB 
+    Return group id which not in MongoDB.
     """
     group_id = generate_code()
     while crud.find_document(shoplist_collection, group_id):
@@ -17,22 +17,22 @@ def generate_group_id():
 
 def generate_code():
     """
-    Generate 6 digit code
+    Generate 6 digit code.
     """
     return random.randrange(100000, 999999)
 
 
 def get_shoplist(group_id):
     """
-    get shoplist
+    Get shoplist from shoplist_collection.
     """
     group_data = crud.find_document(shoplist_collection, {"_id": group_id})
     return group_data["shoplist"]
 
 
-def get_user_message(products):
+def message_which_shopping_list(products):
     """
-    get user message all products in shoplist
+    Get string numbered list with all products in shoplist for the user's message.
     """
     i = 1
     user_message = ''
@@ -43,9 +43,9 @@ def get_user_message(products):
     return user_message
 
 
-def get_data_for_user_collection(group_id, user_id):
+def get_data_for_users_collection(group_id, user_id):
     """
-    get data for add in users collection
+    Get data for add in users_collection.
     """
     return {
         "group_id": group_id,
