@@ -22,11 +22,11 @@ def generate_code():
     return random.randrange(100000, 999999)
 
 
-def get_shoplist(group_id):
+def get_shoplist(user_id):
     """
     Get shoplist from shoplist_collection.
     """
-    group_data = crud.find_document(shoplist_collection, {"_id": group_id})
+    group_data = crud.find_document(shoplist_collection, {"_id": get_group_id(user_id)})
     return group_data["shoplist"]
 
 
@@ -51,3 +51,11 @@ def get_data_for_users_collection(group_id, user_id):
         "group_id": group_id,
         "user_id": user_id
     }
+
+
+def get_group_id(user_id):
+    """
+    Get group id in which consist user.
+    """
+    user_info = crud.find_document(users_collection, {"user_id": user_id})
+    return user_info["group_id"]
