@@ -154,3 +154,10 @@ async def exit_group(message: types.Message):
         await message.answer("Вы не состоите в группе")
     
     await message.answer(texts.group_text, reply_markup=keyboard.group_buttons())
+
+
+async def answer_other_message(message: types.Message):
+    """
+    Handler for answer users message.
+    """
+    await message.answer("Я не умею читать...")
