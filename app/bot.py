@@ -2,9 +2,10 @@ from aiogram import Bot, Dispatcher, executor
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
 from handlers import register_handlers, register_buttons_callback
+from config import Config
 
 
-bot = Bot(token="5289843967:AAGvSL2RvJL56fubaPTeh-yDjeqmwennBho")
+bot = Bot(token=Config.token)
 dp = Dispatcher(bot, storage=MemoryStorage())
 
 register_handlers(dp)

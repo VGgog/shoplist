@@ -1,7 +1,9 @@
 from pymongo import MongoClient
 
+from config import Config
 
-client = MongoClient("localhost", 27017)
+
+client = MongoClient(Config.db_host)
 
 db = client["ShoplistDB"]
 
