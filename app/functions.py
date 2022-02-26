@@ -1,7 +1,6 @@
 import random
 
-from database import shoplist_collection, users_collection
-from database import crud
+from database import crud, shoplist_collection, users_collection
 
 
 def generate_group_id():

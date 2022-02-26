@@ -1,7 +1,7 @@
 from aiogram import Dispatcher
 
-from handlers import handler, callbacks
-from handlers.states import StateForm
+from handlers import handler
+from states import StateForm
 
 
 def register_handlers(dp: Dispatcher):

@@ -1,7 +1,9 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from handlers import keyboard, texts, functions
+from keyboards import keyboard
+import texts
+import functions
 from database import shoplist_collection, users_collection, crud
 
 

@@ -1,6 +1,7 @@
-from handlers import keyboard, texts, functions
-from handlers.states import StateForm
+import functions
+from states import StateForm
 from database import shoplist_collection, users_collection, crud
+from keyboards import keyboard
 
 
 async def callback_buttons_handler(callback_query):
