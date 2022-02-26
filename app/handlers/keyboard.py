@@ -10,7 +10,7 @@ def group_buttons():
 
     buttons = [
             types.InlineKeyboardButton(text="Создать группу", callback_data="create_group"),
-            types.InlineKeyboardButton(text="Добавиться в группу", callback_data="add_to_a_group")]
+            types.InlineKeyboardButton(text="Присоединиться к группе", callback_data="add_to_a_group")]
     
     start_menu_keyboard.add(*buttons)
 
@@ -26,8 +26,8 @@ def menu_buttons():
 
     buttons = [
             types.InlineKeyboardButton(text="Список", callback_data="shoplist"),
-            types.InlineKeyboardButton(text="Добавить в список", callback_data="add_to_shoplist"),
-            types.InlineKeyboardButton(text="Удалить из списка", callback_data="delete_in_shoplist")
+            types.InlineKeyboardButton(text="Добавить продукт", callback_data="add_to_shoplist"),
+            types.InlineKeyboardButton(text="Удалить продукт", callback_data="delete_in_shoplist")
             ]
 
     menu_keyboard.add(*buttons)

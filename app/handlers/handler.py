@@ -9,8 +9,6 @@ async def start(message: types.Message):
     """
     The bot's response to the start command.
     """
-    await message.answer(texts.hello_text)
-    
     user_id = message.chat.id
 
     if crud.find_document(users_collection, {"user_id": user_id}):
@@ -42,7 +40,7 @@ async def add_user_in_group(message: types.Message, state: FSMContext):
         users.append(user_id)
         crud.update_document(shoplist_collection, {"_id": group_id}, {"users": users})
         
-        await message.answer("Вы добавлены в группу")
+        await message.answer("Вы добавлены в группу.")
         
         # Create and add new user in users_collection.
         crud.create_document(users_collection, functions.get_data_for_users_collection(group_id, user_id))
@@ -50,7 +48,7 @@ async def add_user_in_group(message: types.Message, state: FSMContext):
         await message.answer("Меню:", reply_markup=keyboard.menu_buttons())
     
     else:
-        await message.answer("Группа не найдена")
+        await message.answer("Группа не найдена.")
         await message.answer(texts.group_text, reply_markup=keyboard.group_buttons())
     
     await state.finish()
@@ -69,7 +67,7 @@ async def add_product_in_shoplist(message: types.Message, state: FSMContext):
     products.append(product_text)
     crud.update_document(shoplist_collection, {"_id": group_id}, {"shoplist": products})
 
-    await message.answer("Продукт добавлен")
+    await message.answer("Продукт добавлен.")
 
     await state.finish()
     await message.answer("Меню:", reply_markup=keyboard.menu_buttons())
@@ -94,13 +92,13 @@ async def delete_product_in_shoplist(message: types.Message, state: FSMContext):
             products.pop(product_index - 1)
             crud.update_document(shoplist_collection, {"_id": group_id}, {"shoplist": products})
 
-            await message.answer("Продукт удалён")
+            await message.answer("Продукт удалён.")
 
         else:
-            await message.answer("Такого пункта нет")
+            await message.answer("Такого пункта нет...")
     
     else:
-        await message.answer("Введите число")
+        await message.answer("Введите число:")
     
     await state.finish()
     await message.answer("Меню:", reply_markup=keyboard.menu_buttons())
@@ -120,7 +118,7 @@ async def send_group_code(message: types.Message):
         await message.answer("Меню:", reply_markup=keyboard.menu_buttons())
 
     else:
-        await message.answer("Вы не состоите в группе")
+        await message.answer("Вы не состоите в группе.")
         await message.answer(texts.group_text, reply_markup=keyboard.group_buttons())
 
 
@@ -148,10 +146,10 @@ async def exit_group(message: types.Message):
         # Delete user in users list in shoplist collection.
         crud.update_document(shoplist_collection, group_data, {"users": users_list})
         
-        await message.answer("Вы вышли из группы")
+        await message.answer("Вы вышли из группы.")
 
     else:
-        await message.answer("Вы не состоите в группе")
+        await message.answer("Вы не состоите в группе.")
     
     await message.answer(texts.group_text, reply_markup=keyboard.group_buttons())
 
