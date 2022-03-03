@@ -7,7 +7,7 @@ import functions
 from database import shoplist_collection, users_collection, crud
 
 
-async def start(message: types.Message):
+async def menu(message: types.Message):
     """
     The bot's response to the start command.
     """
@@ -161,3 +161,4 @@ async def answer_other_message(message: types.Message):
     Handler for answer users message.
     """
     await message.answer("Я не умею читать...")
+    await menu(message)
