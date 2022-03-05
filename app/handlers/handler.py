@@ -7,6 +7,7 @@ from keyboards import keyboard
 import texts
 import functions
 from database import shoplist_collection, users_collection, crud
+from bot import bot
 
 
 async def menu(message: types.Message):
@@ -55,16 +56,25 @@ async def add_product_in_shoplist(message: types.Message, state: FSMContext):
     """
     Handler for add product in shoplist.
     """
-    product_text = message.text
+    product = message.text
     user_id = message.chat.id
 
     group_id = functions.get_group_id(user_id)
     products = functions.get_shoplist(user_id)
-    products.append(product_text)
+    products.append(product)
 
     crud.update_document(shoplist_collection, {"_id": group_id}, {"shoplist": products})
 
     await message.answer("Продукт добавлен.")
+
+    # Send a message to all users in the group about a new product in the shopping list
+    collection = crud.find_document(shoplist_collection, {"_id": group_id})
+
+    for user in collection["users"]:
+        if user == user_id:
+            continue
+        await bot.send_message(user, f"В списке новый пункт:\n\n{product}")
+
     await state.finish()
     await message.answer("Меню:", reply_markup=keyboard.menu_buttons())
 
