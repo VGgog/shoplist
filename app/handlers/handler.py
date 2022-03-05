@@ -1,6 +1,8 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
+from aiogram import Dispatcher
 
+from states import StateForm
 from keyboards import keyboard
 import texts
 import functions
@@ -162,3 +164,18 @@ async def answer_other_message(message: types.Message):
     """
     await message.answer("Я не умею читать...")
     await menu(message)
+
+
+def register_handlers(dp: Dispatcher):
+    """
+    Register all handlers.
+    """
+    dp.register_message_handler(menu, content_types=["text"], commands=["start", "menu"])
+    dp.register_message_handler(send_group_code, commands="code")
+    dp.register_message_handler(exit_group, commands="exit")
+
+    dp.register_message_handler(answer_other_message)
+
+    dp.register_message_handler(add_product_in_shoplist, state=StateForm.add_product)
+    dp.register_message_handler(delete_product_in_shoplist, state=StateForm.delete_product)
+    dp.register_message_handler(add_user_in_group, state=StateForm.adding_user)

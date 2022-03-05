@@ -1,7 +1,9 @@
+from aiogram import Dispatcher
+
 import functions
 from states import StateForm
 from database import shoplist_collection, users_collection, crud
-from keyboards import keyboard
+from . import keyboard
 
 
 async def callback_buttons_handler(callback_query):
@@ -75,3 +77,10 @@ async def callback_buttons_handler(callback_query):
         else:
             await callback_query.message.answer("Список пуст...")
             await callback_query.message.answer("Меню:", reply_markup=keyboard.menu_buttons())
+
+
+def register_buttons_callback(dp: Dispatcher):
+    """
+    Register callback for buttons.
+    """
+    dp.register_callback_query_handler(callback_buttons_handler, lambda callback_query: True)
