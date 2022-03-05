@@ -7,7 +7,7 @@ After adding a new punt to the list of products, a message about a new punt in t
 
 Try the bot - https://t.me/ShopLsBot
 
-###Technology stack ###
+### Technology stack ###
 * Python 3.8
 * aiogram 2.19 - Telegram Bot API framework
 * MongoDB - database
