@@ -2,11 +2,10 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram import Dispatcher
 
-from states import StateForm
-from keyboards import keyboard
-import texts
-import functions
-from database import shoplist_collection, users_collection, crud
+from ..states import StateForm
+from ..keyboards import keyboard
+from ..database import shoplist_collection, users_collection, crud
+from .. import functions, texts
 
 
 async def menu(message: types.Message):

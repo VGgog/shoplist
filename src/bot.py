@@ -3,8 +3,8 @@ import logging
 from aiogram import Bot, Dispatcher, executor
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
-from handlers.handler import register_handlers
-from keyboards.callbacks import register_buttons_callback
+from bot.handlers import register_handlers
+from bot.keyboards import register_buttons_callback
 from config import Config
 
 
