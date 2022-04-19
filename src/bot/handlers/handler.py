@@ -5,7 +5,7 @@ from aiogram import Dispatcher
 from ..states import StateForm
 from ..keyboards import keyboard
 from ..database import shoplist_collection, users_collection, crud
-from .. import functions
+from .. import services
 
 
 async def menu(message: types.Message):

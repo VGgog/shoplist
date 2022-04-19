@@ -1,7 +1,7 @@
 from aiogram import Dispatcher
 
 from . import keyboard
-from .. import functions
+from .. import services
 from ..states import StateForm
 from ..database import shoplist_collection, users_collection, crud
 
