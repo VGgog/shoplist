@@ -1,9 +1,9 @@
 from aiogram import Dispatcher
 
-import functions
-from states import StateForm
-from database import shoplist_collection, users_collection, crud
 from . import keyboard
+from .. import services
+from ..states import StateForm
+from ..database import shoplist_collection, users_collection, crud
 
 
 async def callback_buttons_handler(callback_query):
