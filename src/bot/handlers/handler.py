@@ -5,7 +5,7 @@ from aiogram import Dispatcher
 from ..states import StateForm
 from ..keyboards import keyboard
 from ..database import shoplist_collection, users_collection, crud
-from .. import functions, texts
+from .. import functions
 
 
 async def menu(message: types.Message):
@@ -21,7 +21,7 @@ async def menu(message: types.Message):
     else:
         # If user not in users collection then he gets group buttons. 
         # For add to group or create group.
-        await message.answer(texts.group_text, reply_markup=keyboard.group_buttons())
+        await message.answer('Для дальнейшей работы Вам надо:', reply_markup=keyboard.group_buttons())
 
 
 async def add_user_in_group(message: types.Message, state: FSMContext):
@@ -45,7 +45,7 @@ async def add_user_in_group(message: types.Message, state: FSMContext):
         await message.answer("Меню:", reply_markup=keyboard.menu_buttons())
     else:
         await message.answer("Группа не найдена.")
-        await message.answer(texts.group_text, reply_markup=keyboard.group_buttons())
+        await message.answer('Для дальнейшей работы Вам надо:', reply_markup=keyboard.group_buttons())
     
     await state.finish()
 
@@ -109,7 +109,7 @@ async def send_group_code(message: types.Message):
         await message.answer("Меню:", reply_markup=keyboard.menu_buttons())
     else:
         await message.answer("Вы не состоите в группе.")
-        await message.answer(texts.group_text, reply_markup=keyboard.group_buttons())
+        await message.answer('Для дальнейшей работы Вам надо:', reply_markup=keyboard.group_buttons())
 
 
 async def exit_group(message: types.Message):
@@ -138,7 +138,7 @@ async def exit_group(message: types.Message):
     else:
         await message.answer("Вы не состоите в группе.")
     
-    await message.answer(texts.group_text, reply_markup=keyboard.group_buttons())
+    await message.answer('Для дальнейшей работы Вам надо:', reply_markup=keyboard.group_buttons())
 
 
 async def answer_other_message(message: types.Message):
